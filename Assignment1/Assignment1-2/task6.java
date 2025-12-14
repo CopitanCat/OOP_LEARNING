@@ -14,7 +14,7 @@ public class task6 {
         else
         {
             stopword = in.next();
-            if (stopword.equals("ENTER"))
+            if (stopword.equalsIgnoreCase("ENTER"))
             {
                 break;
             }
