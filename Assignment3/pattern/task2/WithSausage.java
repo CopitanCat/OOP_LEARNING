@@ -1,3 +1,5 @@
+package task2;
+
 public class WithSausage extends PizzaDecorator {
     public WithSausage(Pizza pizza){
         super(pizza);

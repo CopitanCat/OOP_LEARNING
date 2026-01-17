@@ -1,4 +1,6 @@
-public class MicroscopeAdapter extends Hammer{
+package task1;
+
+public class MicroscopeAdapter extends Hammer {
     private Microscope microscope;
 
     public MicroscopeAdapter(Microscope microscope){

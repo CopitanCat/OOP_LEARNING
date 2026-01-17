@@ -1,3 +1,5 @@
+package task1;
+
 public class Microscope {
 
     public void enlarge(Object o) {

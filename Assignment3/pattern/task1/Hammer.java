@@ -1,3 +1,5 @@
+package task1;
+
 public class Hammer {
     public boolean hit(Nails nail) {
         if (nail.visiblePart > 0) {

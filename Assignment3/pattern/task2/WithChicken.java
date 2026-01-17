@@ -1,4 +1,6 @@
-public class WithChicken extends PizzaDecorator{
+package task2;
+
+public class WithChicken extends PizzaDecorator {
     public WithChicken(Pizza pizza){
         super(pizza);
     }

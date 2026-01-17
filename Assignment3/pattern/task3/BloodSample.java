@@ -1,3 +1,5 @@
+package task3;
+
 public class BloodSample {
     private final User user;
     private final BloodType bloodType;

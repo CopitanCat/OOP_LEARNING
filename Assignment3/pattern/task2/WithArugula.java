@@ -1,4 +1,6 @@
-public class WithArugula extends PizzaDecorator{
+package task2;
+
+public class WithArugula extends PizzaDecorator {
     public WithArugula(Pizza pizza){
         super(pizza);
     }

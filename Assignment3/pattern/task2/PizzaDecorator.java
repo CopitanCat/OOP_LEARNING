@@ -1,3 +1,5 @@
+package task2;
+
 public abstract class PizzaDecorator implements Pizza {
 
     private final Pizza decoratedPizza;

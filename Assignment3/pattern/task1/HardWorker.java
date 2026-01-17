@@ -1,3 +1,5 @@
+package task1;
+
 import java.util.Set;
 
 public class HardWorker {
