@@ -1,6 +1,7 @@
 import java.awt.Color;
 
 public class task17 {
+    private int p =6;
     public static void main(String[] args) throws Exception {
         Fox bigFox = new BigFox();
         System.out.println(bigFox.getName());
