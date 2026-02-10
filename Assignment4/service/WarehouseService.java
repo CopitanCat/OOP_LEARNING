@@ -1,49 +1,66 @@
 package service;
 
-import domain.Product;
-import repository.ItemList;
+import domain.*;
+import repository.RepositoryCRUD;
+import strategy.RestockStrategy;
 
-import java.util.Scanner;
+import java.util.List;
 
 public class WarehouseService {
-    Scanner in = new Scanner(System.in);
-    private final ItemList repository ;
+    private final RepositoryCRUD<Warehouse> warehouseRepository;
+    private final RestockStrategy restockStrategy;
 
-    public WarehouseService(ItemList repository){
-        this.repository = repository;
+    public WarehouseService(RepositoryCRUD<Warehouse> warehouseRepository, RestockStrategy restockStrategy) {
+        this.warehouseRepository = warehouseRepository;
+        this.restockStrategy = restockStrategy;
+    }
+    public void getAllWarehouse() {
+        List<Warehouse> warehouses = warehouseRepository.findAll();
+        for (Warehouse warehouse : warehouses){
+            System.out.println(warehouse.getId()+". "+ warehouse.getName());
+        }
+    }
+    public void createWarehouse(String name) {
+        warehouseRepository.save(new Warehouse(name));
     }
 
-    public void makeProduct(){
-        System.out.print("name: ");
-        String name = in.next();
-        System.out.print(" category: ");
-        String category = in.next();
-        System.out.print(" article: ");
-        int article = in.nextInt();
-        System.out.print(" count: ");
-        int count = in.nextInt();
-        System.out.print(" Required Item Count: ");
-        int minRequiredInventory = in.nextInt();
-        this.repository.save(name, new Product(name, category, article, minRequiredInventory), count);
+    public void processSupply(Integer warehouseId, Product product, int amount) {
+        Warehouse warehouse = warehouseRepository.findById(warehouseId);
+        if (warehouse == null){
+            throw new IllegalArgumentException("Склад не найден");
+        }
+
+        Operation supply = new Delivery();
+        supply.apply(product, amount);
+        warehouse.updateStock(product.getId(), amount); // Увеличиваем остаток
+
+        System.out.println("Проведена " + supply);
     }
 
-    public void PrintInfo(){
-        System.out.print("Please input name of item: ");
-        String name = in.next();
-        this.repository.read(name);
+    public void processShipment(Integer warehouseId, Product product, int amount) {
+        Warehouse warehouse = warehouseRepository.findById(warehouseId);
+        int currentStock = warehouse.getStock(product.getId());
+
+        if (currentStock < amount) {
+            System.out.println("ОШИБКА: Недостаточно товара " + product.getName());
+            return;
+        }
+
+        Operation shipment = new Shipment();
+        shipment.apply(product,amount);
+        warehouse.updateStock(product.getId(), -amount); // Уменьшаем остаток
+
+        System.out.println("Проведена " + shipment);
+
+        if (restockStrategy.isRestockNeeded(product, warehouse.getStock(product.getId()))) {
+            System.out.println("!!! ВНИМАНИЕ: Необходимо пополнить запасы товара: " + product.getName());
+        }
+
     }
 
-    public void updateData(){
-        System.out.print("name of item: ");
-        String name = in.next();
-        System.out.print("change count to: ");
-        int count = in.nextInt();
-        this.repository.update(name, count);
+    public void printBalances(Integer warehouseId) {
+        Warehouse w = warehouseRepository.findById(warehouseId);
+        System.out.println("--- Остатки на складе " + w + " ---");
+        w.getAllStock().forEach((prodId, qty) -> System.out.println("Product ID " + prodId + ": " + qty + " шт."));
     }
-    public void deleteItem(){
-        System.out.print("name of item: ");
-        String name = in.next();
-        this.repository.delete(name);
-    }
-
 }
