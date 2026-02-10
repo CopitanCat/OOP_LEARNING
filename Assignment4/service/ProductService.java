@@ -4,6 +4,7 @@ import domain.Product;
 import domain.Warehouse;
 import repository.RepositoryCRUD;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -31,4 +32,13 @@ public class ProductService {
     public List<Product> getListProduct(){
         return productRepository.findAll();
     }
+    public void getProductByCategory(String category) {
+        List<Product> products = productRepository.findAll();
+        for (Product product : products){
+            if (product.getCategory().equals(category)){
+                System.out.println(product.getId()+". Name: "+ product.getName()+". Category: "+ product.getCategory());
+            }
+        }
+    }
+
 }

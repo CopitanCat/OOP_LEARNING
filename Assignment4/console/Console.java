@@ -78,13 +78,14 @@ public class Console {
     }
 
     private void setOperation(){
-        System.out.println("=== Delivery Product: 1   | Shipment Product: 2 ===");
-        System.out.println("===             Delivery Strategy: 3            ===");
+        System.out.println("=== Delivery Product: 1   | Shipment Product: 2                       ===");
+        System.out.println("=== Delivery Strategy: 3  | Move product between warehouses: 4        ===");
         String input =in.next();
         switch (input){
             case "1" -> setDelivery();
             case "2" -> setShipment();
             case "3" -> setStrategy();
+            case "4" -> setMovement();
             default -> {
                 return;
             }
@@ -135,6 +136,22 @@ public class Console {
         warehouseService.setProductAndMinStock(warehouseid, productService.getProductById(productid), minStock);
     }
 
+    private void setMovement(){
+        System.out.println("Warehouses:");
+        getALLWarehouse();
+        System.out.print("Warehouse shipment From: ");
+        int warehouseFrom= in.nextInt();
+        System.out.print("Warehouse delivery to: ");
+        int warehouseTo= in.nextInt();
+        System.out.println("Product:");
+        getALLProduct();
+        System.out.print("Id of product to delivery: ");
+        int productid = in.nextInt();
+        System.out.print("Count: ");
+        int count = in.nextInt();
+        warehouseService.move(warehouseFrom,warehouseTo,productService.getProductById(productid),count);
+    }
+
     private void getOperation(){
         System.out.println("=== Get Entity: 1   |  Get History: 2 ===");
         System.out.println("===        Warehouse Balance: 3       ===");
@@ -151,10 +168,12 @@ public class Console {
 
     private void getEntity() {
         System.out.println("=== Get Product: 1   |  Get Warehouse: 2 ===");
+        System.out.println("===        Get Product By Category:3     ===");
         String input =in.next();
         switch (input){
             case "1" -> getALLProduct();
             case "2" -> getALLWarehouse();
+            case "3" -> getALLProductByCategory();
             default -> {
                 return;
             }
@@ -167,7 +186,11 @@ public class Console {
     private void getALLWarehouse(){
         warehouseService.getAllWarehouse();
     }
-
+    private void getALLProductByCategory(){
+        System.out.print("Category: ");
+        String category = in.next();
+        productService.getProductByCategory(category);
+    }
     private void getHistory(){
         System.out.println("=== Get Delivery His: 1   |  Get Shipment His: 2 ===");
         String input = in.next();

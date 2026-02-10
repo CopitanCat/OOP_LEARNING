@@ -25,10 +25,6 @@ public class WarehouseService {
         }
     }
 
-    public List<Warehouse> getListWarehouse(){
-        return warehouseRepository.findAll();
-    }
-
     public void setProductAndMinStock(int warehouseId ,Product product, int minStock) {
         warehouseRepository.findById(warehouseId).setProductAndMinStock(product.getId(), minStock);
     }
@@ -40,17 +36,17 @@ public class WarehouseService {
 
     }
 
-    public void processDelivery(Integer warehouseId, Product product, int amount) {
+    public void processDelivery(Integer warehouseId, Product product, int amount){
         Warehouse warehouse = warehouseRepository.findById(warehouseId);
         if (warehouse == null){
             throw new IllegalArgumentException("Склад не найден");
         }
 
-
         warehouse.getDelivery().apply(product, amount);
         warehouse.updateStock(product.getId(), amount); // Увеличиваем остаток
 
         System.out.println("Проведена доставка");
+
     }
 
     public void DeliveryHistory(Integer warehouseId){
@@ -61,11 +57,11 @@ public class WarehouseService {
     public void processShipment(Integer warehouseId, Product product, int amount) {
         Warehouse warehouse = warehouseRepository.findById(warehouseId);
         int currentStock = warehouse.getStock(product.getId());
-
         if (currentStock < amount) {
-            System.out.println("ОШИБКА: Недостаточно товара " + product.getName());
-            return;
+                System.out.println("ОШИБКА: Недостаточно товара " + product.getName());
+                return;
         }
+
 
 
         warehouse.getShipment().apply(product,amount);
@@ -87,5 +83,14 @@ public class WarehouseService {
         Warehouse w = warehouseRepository.findById(warehouseId);
         System.out.println("--- Остатки на складе " + w.getName() + " ---");
         w.getAllStock().forEach((prodId, qty) -> System.out.println("Product Name- " + product.getProductById(prodId).getName() + ": " + qty + " шт."));
+    }
+    public void move(int warehouseFrom, int warehouseTo, Product product,int count)  {
+        if (warehouseRepository.findById(warehouseFrom).getStock(product.getId()) <= count) {
+            processShipment(warehouseFrom, product, count);
+            processDelivery(warehouseTo, product, count);
+        }
+        else {
+            System.out.println("Недостаточна товаров");
+        }
     }
 }
