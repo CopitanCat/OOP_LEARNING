@@ -1,7 +1,10 @@
 package strategy;
 
-import domain.Product;
+import domain.Warehouse;
+import repository.RepositoryCRUD;
+import service.ProductService;
 
 public interface RestockStrategy {
-    boolean isRestockNeeded(Product product, int currentQuantity);
+    boolean isRestockNeeded(int minStock, int currentQuantity);
+    void Restoke(RepositoryCRUD<Warehouse> warehouses, ProductService productService);
 }

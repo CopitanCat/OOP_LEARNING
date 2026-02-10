@@ -19,6 +19,10 @@ public class RepositoryProduct implements RepositoryCRUD<Product> {
         storage.put(entity.getId(), entity);
     }
 
+    public int getId(){
+        return this.idCounter;
+    }
+
 
     @Override
     public Product findById(int id) {

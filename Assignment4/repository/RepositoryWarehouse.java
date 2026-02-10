@@ -1,6 +1,5 @@
 package repository;
 
-import domain.Product;
 import domain.Warehouse;
 
 import java.util.ArrayList;
@@ -20,6 +19,10 @@ public class RepositoryWarehouse implements RepositoryCRUD<Warehouse> {
         storage.put(entity.getId(), entity);
     }
 
+    @Override
+    public int getId() {
+        return this.idCounter;
+    }
 
     @Override
     public Warehouse findById(int id) {
