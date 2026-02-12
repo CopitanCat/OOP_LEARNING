@@ -2,16 +2,14 @@ package service;
 
 import domain.*;
 import repository.RepositoryCRUD;
-import strategy.FixedThresholdStrategy;
+import strategy.RestockingProduct;
 import strategy.RestockStrategy;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class WarehouseService {
     private final RepositoryCRUD<Warehouse> warehouseRepository;
-    private final RestockStrategy restockStrategy = new FixedThresholdStrategy();
+    private final RestockStrategy restockStrategy = new RestockingProduct();
 
     public WarehouseService(RepositoryCRUD<Warehouse> warehouseRepository) {
         this.warehouseRepository = warehouseRepository;
@@ -30,16 +28,21 @@ public class WarehouseService {
     }
 
     public void createWarehouse(String name) {
-        Warehouse newWarehouse = new Warehouse(name);
-        newWarehouse.setDelAndShip(new Delivery(), new Shipment());
-        warehouseRepository.save(newWarehouse);
-
+        if(!warehouseRepository.getNames().contains(name)) {
+            Warehouse newWarehouse = new Warehouse(name);
+            newWarehouse.setDelAndShip(new Delivery(), new Shipment());
+            warehouseRepository.save(newWarehouse, name);
+            System.out.println("Warehouse "+ name + " created.");
+        }
+        else {
+            System.out.println("Warehouse is already exist.");
+        }
     }
 
     public void processDelivery(Integer warehouseId, Product product, int amount){
         Warehouse warehouse = warehouseRepository.findById(warehouseId);
         if (warehouse == null){
-            throw new IllegalArgumentException("Склад не найден");
+            throw new IllegalArgumentException("Warehouse is not exist");
         }
 
         warehouse.getDelivery().apply(product, amount);
@@ -58,7 +61,7 @@ public class WarehouseService {
         Warehouse warehouse = warehouseRepository.findById(warehouseId);
         int currentStock = warehouse.getStock(product.getId());
         if (currentStock < amount) {
-                System.out.println("ОШИБКА: Недостаточно товара " + product.getName());
+                System.out.println("ERROR: Недостаточно товара " + product.getName());
                 return;
         }
 
@@ -85,12 +88,17 @@ public class WarehouseService {
         w.getAllStock().forEach((prodId, qty) -> System.out.println("Product Name- " + product.getProductById(prodId).getName() + ": " + qty + " шт."));
     }
     public void move(int warehouseFrom, int warehouseTo, Product product,int count)  {
-        if (warehouseRepository.findById(warehouseFrom).getStock(product.getId()) <= count) {
+        if (warehouseRepository.findById(warehouseFrom).getStock(product.getId()) >= count) {
             processShipment(warehouseFrom, product, count);
             processDelivery(warehouseTo, product, count);
         }
         else {
             System.out.println("Недостаточна товаров");
         }
+    }
+    public void DeleteWarehouse(int id){
+        String name = warehouseRepository.findById(id).getName();
+        warehouseRepository.delete(id);
+        System.out.println("Warehouse "+ name + "is deleted!");
     }
 }

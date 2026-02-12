@@ -1,6 +1,5 @@
 package console;
 
-
 import repository.RepositoryProduct;
 import repository.RepositoryWarehouse;
 import service.ProductService;
@@ -25,90 +24,134 @@ public class Console {
     public boolean isRun(){
         return IsRun;
     }
+    private void End(){
+        System.out.println("===          Do you want to exit              ===");
+        System.out.println("===       Default-> No  |  Yes                   ===");
+        System.out.print("Your answer: ");
+
+        String input = in.nextLine();
+        input = input.toLowerCase();
+        if (input.equals("yes")) {
+            IsRun = false;
+        } else {
+            run();
+        }
+    }
 
     public void run(){
         warehouseService.Restock(productService);
-        System.out.println("===                  Operations               ===");
-        System.out.println("===      Create entity:1 | Operations : 2     ===");
-        String input = in.next();
+        System.out.println("===                  Operations              ===");
+        System.out.println("=== Create/Deleate entity:1 | Operations : 2 ===");
+        System.out.println("===       Press anything to exit             ===");
+        SwitchCase();
+    }
+
+    private void SwitchCase(){
+        String input = in.nextLine().toLowerCase();
         switch (input){
-            case "1" -> Create();
+            case "1" -> Create_Delete();
             case "2" -> Operation();
-            default -> {
-                IsRun = false;
-            }
+            case "" -> SwitchCase();
+            default -> End();
         }
     }
 
-    private void Create() {
+    private void Create_Delete() {
         System.out.println("=== Create Product: 1   | Create Warehouse: 2 ===");
-        String input = in.next();
-        switch (input){
+        System.out.println("=== Delete Product: 3   | Delete Warehouse: 4 ===");
+        String input = in.nextLine();
+        switch (input) {
             case "1" -> CreateProduct();
             case "2" -> CreateWarehouse();
-            default -> {
-                return;
-            }
+            case "3" -> DeleteProduct();
+            case "4" -> DeleteWarehouse();
         }
+    }
+
+    private void DeleteProduct(){
+        getALLProduct();
+        System.out.print("Id of product to delivery: ");
+        int productid = in.nextInt();
+
+        productService.DeleteProduct(productid);
+    }
+
+    private void DeleteWarehouse(){
+        System.out.println("Warehouses:");
+        getALLWarehouse();
+        System.out.print("Warehouse ID to delivery: ");
+        int warehouseid = in.nextInt();
+
+        warehouseService.DeleteWarehouse(warehouseid);
     }
 
     private void CreateProduct(){
-        System.out.print("Name: ");
-        String name = in.next();
-        System.out.print("Category: ");
-        String category = in.next();
-        productService.createProduct(name,category);
+        try {
+            System.out.print("Name: ");
+            String name = in.nextLine().toLowerCase();
+            System.out.print("Category: ");
+            String category = in.nextLine().toLowerCase();
+            productService.createProduct(name, category);
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
     }
     private void CreateWarehouse(){
-        System.out.print("Name: ");
-        String name = in.next();
-        warehouseService.createWarehouse(name);
+        try {
+            System.out.print("Name: ");
+            String name = in.nextLine().toLowerCase();
+            warehouseService.createWarehouse(name);
+        }
+        catch (Exception e){
+            System.out.println("Error: "+e.getMessage());
+        }
     }
 
     private void Operation(){
         System.out.println("=== Set Operation: 1   | Get Operation: 2 ===");
-        String input =in.next();
+        String input =in.nextLine();
         switch (input){
             case "1"-> setOperation();
             case "2"-> getOperation();
-            default -> {
-                return;
-            }
+
         }
     }
 
     private void setOperation(){
         System.out.println("=== Delivery Product: 1   | Shipment Product: 2                       ===");
         System.out.println("=== Delivery Strategy: 3  | Move product between warehouses: 4        ===");
-        String input =in.next();
+        String input =in.nextLine();
         switch (input){
             case "1" -> setDelivery();
             case "2" -> setShipment();
             case "3" -> setStrategy();
             case "4" -> setMovement();
-            default -> {
-                return;
-            }
+
         }
     }
 
     private void setDelivery(){
-        System.out.println("Product:");
-        getALLProduct();
-        System.out.print("Id of product to delivery: ");
-        int productid = in.nextInt();
-        System.out.println("Warehouses:");
-        getALLWarehouse();
-        System.out.print("Warehouse ID to delivery: ");
-        int warehouseid = in.nextInt();
-        System.out.print("Count: ");
-        int count = in.nextInt();
+        try {
 
-        warehouseService.processDelivery(warehouseid, productService.getProductById(productid),count );
+            getALLProduct();
+            System.out.print("Id of product to delivery: ");
+            int productid = in.nextInt();
+            System.out.println("Warehouses:");
+            getALLWarehouse();
+            System.out.print("Warehouse ID to delivery: ");
+            int warehouseid = in.nextInt();
+            System.out.print("Count: ");
+            int count = in.nextInt();
+
+            warehouseService.processDelivery(warehouseid, productService.getProductById(productid), count);
+        } catch (Exception e) {
+            System.out.println("Error: "+e.getMessage());
+        }
     }
 
     private void setShipment(){
-        System.out.println("Product:");
+        try{
+
         getALLProduct();
         System.out.print("Id of product to delivery: ");
         int productid = in.nextInt();
@@ -120,30 +163,39 @@ public class Console {
         int count = in.nextInt();
 
         warehouseService.processShipment(warehouseid, productService.getProductById(productid), count);
+        } catch (Exception e) {
+            System.out.println("Error: "+e.getMessage());
+        }
     }
 
-    private void setStrategy(){
-        System.out.println("Product:");
-        getALLProduct();
-        System.out.print("Id of product to delivery: ");
-        int productid = in.nextInt();
-        System.out.println("Warehouses:");
-        getALLWarehouse();
-        System.out.print("Warehouse ID to delivery: ");
-        int warehouseid = in.nextInt();
-        System.out.print("Minimal Stock: ");
-        int minStock = in.nextInt();
-        warehouseService.setProductAndMinStock(warehouseid, productService.getProductById(productid), minStock);
+    private void setStrategy() {
+        try {
+
+            getALLProduct();
+            System.out.print("Id of product to delivery: ");
+            int productid = in.nextInt();
+            System.out.println("Warehouses:");
+            getALLWarehouse();
+            System.out.print("Warehouse ID to delivery: ");
+            int warehouseid = in.nextInt();
+            System.out.print("Minimal Stock: ");
+            int minStock = in.nextInt();
+            warehouseService.setProductAndMinStock(warehouseid, productService.getProductById(productid), minStock);
+        } catch (Exception e) {
+            System.out.println("Error: "+e.getMessage());
+
+        }
     }
 
     private void setMovement(){
+        try{
         System.out.println("Warehouses:");
         getALLWarehouse();
         System.out.print("Warehouse shipment From: ");
         int warehouseFrom= in.nextInt();
         System.out.print("Warehouse delivery to: ");
         int warehouseTo= in.nextInt();
-        System.out.println("Product:");
+
         getALLProduct();
         System.out.print("Id of product to delivery: ");
         int productid = in.nextInt();
@@ -151,79 +203,101 @@ public class Console {
         int count = in.nextInt();
         warehouseService.move(warehouseFrom,warehouseTo,productService.getProductById(productid),count);
     }
-
+        catch (Exception e){
+            System.out.println("Error: "+e.getMessage());
+        }
+}
     private void getOperation(){
         System.out.println("=== Get Entity: 1   |  Get History: 2 ===");
         System.out.println("===        Warehouse Balance: 3       ===");
-        String input = in.next();
+        String input = in.nextLine();
         switch (input){
             case "1" -> getEntity();
             case "2"-> getHistory();
             case "3" -> getBalance();
-            default -> {
-                return;
-            }
+
         }
     }
 
     private void getEntity() {
         System.out.println("=== Get Product: 1   |  Get Warehouse: 2 ===");
         System.out.println("===        Get Product By Category:3     ===");
-        String input =in.next();
+        String input =in.nextLine();
         switch (input){
             case "1" -> getALLProduct();
             case "2" -> getALLWarehouse();
             case "3" -> getALLProductByCategory();
-            default -> {
-                return;
-            }
+
         }
 
     }
     private void getALLProduct(){
+        System.out.println("Product:");
         productService.getAllProducts();
     }
     private void getALLWarehouse(){
         warehouseService.getAllWarehouse();
     }
-    private void getALLProductByCategory(){
+    private void
+
+    getALLProductByCategory(){
+        try{
         System.out.print("Category: ");
-        String category = in.next();
-        productService.getProductByCategory(category);
+        String category = in.nextLine();
+        productService.getProductByCategory(category);} catch (Exception e) {
+            System.out.println("Error: "+e.getMessage());
+        }
     }
     private void getHistory(){
-        System.out.println("=== Get Delivery His: 1   |  Get Shipment His: 2 ===");
-        String input = in.next();
-        switch (input){
-            case "1" -> getDeliveryHis();
-            case "2"-> getShipmentHis();
-            default -> {
-                return;
-            }
+        try {
+            System.out.println("=== Get Delivery His: 1   |  Get Shipment His: 2 ===");
+            String input = in.nextLine();
+            switch (input){
+                case "1" -> getDeliveryHis();
+                case "2"-> getShipmentHis();
+
+         }
+        } catch (Exception e) {
+            System.out.println("Error: "+e.getMessage());
         }
     }
 
-    private void getDeliveryHis(){
-        System.out.println("Warehouses:");
-        getALLWarehouse();
-        System.out.print("Warehouse ID: ");
-        int warehouseId = in.nextInt();
-        warehouseService.DeliveryHistory(warehouseId);
+    private void getDeliveryHis() {
+        try {
+            System.out.println("Warehouses:");
+            getALLWarehouse();
+            System.out.print("Warehouse ID: ");
+            int warehouseId = in.nextInt();
+            warehouseService.DeliveryHistory(warehouseId);
+        } catch (Exception e) {
+            System.out.println("Error: "+e.getMessage());
+
+        }
     }
-    private void  getShipmentHis(){
-        System.out.println("Warehouses:");
-        getALLWarehouse();
-        System.out.print("Warehouse ID: ");
-        int warehouseId = in.nextInt();
-        warehouseService.ShipmentHistory(warehouseId);
+    private void  getShipmentHis() {
+        try {
+            System.out.println("Warehouses:");
+            getALLWarehouse();
+            System.out.print("Warehouse ID: ");
+            int warehouseId = in.nextInt();
+            warehouseService.ShipmentHistory(warehouseId);
+        } catch (Exception e) {
+            System.out.println("Error: "+e.getMessage());
+
+        }
     }
 
-    private  void getBalance(){
-        System.out.println("Warehouses:");
-        getALLWarehouse();
-        System.out.print("Warehouse ID: ");
-        int warehouseId = in.nextInt();
-        warehouseService.printBalances(warehouseId, productService);
+    private  void getBalance() {
+        try {
+            System.out.println("Warehouses:");
+            getALLWarehouse();
+            System.out.print("Warehouse ID: ");
+            int warehouseId = in.nextInt();
+            warehouseService.printBalances(warehouseId, productService);
+        } catch (Exception e) {
+            System.out.println("Error: "+e.getMessage());
+
+        }
     }
 
 

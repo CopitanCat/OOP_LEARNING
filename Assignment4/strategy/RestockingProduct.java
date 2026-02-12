@@ -6,7 +6,7 @@ import service.ProductService;
 import java.util.List;
 
 // Стратегия: Пополнять, если меньше фиксированного порога
-public class FixedThresholdStrategy implements RestockStrategy {
+public class RestockingProduct implements RestockStrategy {
     @Override
     public boolean isRestockNeeded(int minStock, int currentQuantity) {
         return currentQuantity < minStock;

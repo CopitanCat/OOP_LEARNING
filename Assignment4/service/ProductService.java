@@ -16,9 +16,14 @@ public class ProductService {
     }
 
     public void createProduct(String name, String category) {
-        Product product = new Product(name, category);
-        productRepository.save(product);
-        System.out.println("Товар создан: " + product);
+        if (!productRepository.getNames().contains(name)) {
+            Product product = new Product(name, category);
+            productRepository.save(product, name);
+            System.out.println("Product created: " + product.getName()+".");
+        }
+        else {
+            System.out.println("Product is already exist.");
+        }
     }
     public Product getProductById(int id){
         return productRepository.findById(id);
@@ -39,6 +44,12 @@ public class ProductService {
                 System.out.println(product.getId()+". Name: "+ product.getName()+". Category: "+ product.getCategory());
             }
         }
+    }
+
+    public void DeleteProduct(int id){
+        String name = productRepository.findById(id).getName();
+        productRepository.delete(id);
+        System.out.println("Product "+ name + "is deleted!");
     }
 
 }

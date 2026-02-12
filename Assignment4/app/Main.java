@@ -8,7 +8,7 @@ public class Main {
         console.start();
         while (console.isRun()) {
             console.run();
-            Thread.sleep(100);
+            Thread.sleep(300);
         }
     }
 }

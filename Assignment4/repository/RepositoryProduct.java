@@ -9,13 +9,15 @@ import java.util.Map;
 
 public class RepositoryProduct implements RepositoryCRUD<Product> {
     private final Map<Integer, Product> storage= new HashMap<>();
+    private final List<String> names = new ArrayList<>();
     private int idCounter = 1;
 
     @Override
-    public void save(Product entity) {
+    public void save(Product entity, String name) {
         if (entity.getId() == null) {
             entity.setId(idCounter++);
         }
+        names.add(name);
         storage.put(entity.getId(), entity);
     }
 
@@ -39,5 +41,7 @@ public class RepositoryProduct implements RepositoryCRUD<Product> {
         storage.remove(id);
     }
 
-
+    public List<String> getNames() {
+        return names;
+    }
 }
