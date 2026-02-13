@@ -1,26 +1,42 @@
 package domain;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Shipment extends Operation{
-    private final Map<Product, Map<Integer, Integer>> ShipmentHistory = new HashMap<Product, Map<Integer, Integer>>();
-    private final Map<Integer, Integer> supportDATA = new HashMap<>();
+    private final Map<Product, List<Map<Integer, Integer>>> ShipmentHistory = new HashMap<>();
+
 
     @Override
-    public void apply(Product product, int count){
-        this.ShipmentHistory.put(product, supportDATA);
-        int size = this.ShipmentHistory.get(product).size();
-        supportDATA.put(1+size, count);
-    }
+    public void apply(Product product, int count) {
+        try {
+            Map<Integer, Integer> supportDATA = new HashMap<>();
+            List<Map<Integer, Integer>> supportList = new ArrayList<>();
+            int size;
+            if (this.ShipmentHistory.get(product) == null){
+                size = 1;
+            }else {
+                size = this.ShipmentHistory.get(product).size()+1;
+                supportList= ShipmentHistory.get(product);
+            }
 
-    @Override
+            supportDATA.put(size, count);
+            supportList.add(supportDATA);
+            this.ShipmentHistory.put(product, supportList);
+        }
+        catch (Exception e){
+
+            System.out.println(e.getMessage());
+        }
+    } @Override
     public void getHistory() {
         if (!ShipmentHistory.isEmpty()) {
-            for (Map.Entry<Product, Map<Integer, Integer>> history : this.ShipmentHistory.entrySet()) {
-                System.out.println("Name: " + history.getKey().getName());
-                System.out.println("Delivery History: " + history.getValue());
+            for (Product products : ShipmentHistory.keySet()) {
+                System.out.print("Name: " + products.getName());
+                System.out.print(" | Deliveries: ");
+                for (int i = 0; i<ShipmentHistory.get(products).size();i++){
+                    System.out.print( ShipmentHistory.get(products).get(i).get(i+1)+", ");
+                }
+                System.out.println();
             }
         }
         else {

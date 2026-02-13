@@ -19,6 +19,18 @@ public class Console {
 
     public void start() {
         System.out.println("===        Starting System of Warehouse       ===");
+        warehouseService.createWarehouse("MCS-2502");
+        warehouseService.createWarehouse("Epshtein Island");
+        productService.createProduct("kid oil", "oils for skin");
+        productService.createProduct("Islam", "human");
+        productService.createProduct("Madiar", "human");
+        productService.createProduct("Toys", "toy");
+        warehouseService.processDelivery(1, productService.getProductById(2), 1);
+        warehouseService.processDelivery(1, productService.getProductById(3), 1);
+        warehouseService.processDelivery(2, productService.getProductById(1), 100);
+        warehouseService.processDelivery(2, productService.getProductById(4), 10);
+        warehouseService.move(1,2,productService.getProductById(2), 1);
+        warehouseService.move(1,2,productService.getProductById(3), 1);
     }
 
     public boolean isRun(){
@@ -68,21 +80,29 @@ public class Console {
         }
     }
 
-    private void DeleteProduct(){
-        getALLProduct();
-        System.out.print("Id of product to delivery: ");
-        int productid = in.nextInt();
+    private void DeleteProduct() {
+        try {
+            getALLProduct();
+            System.out.print("Id of product to delivery: ");
+            int productid = in.nextInt();
 
-        productService.DeleteProduct(productid);
+            productService.DeleteProduct(productid);
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
     }
 
-    private void DeleteWarehouse(){
-        System.out.println("Warehouses:");
-        getALLWarehouse();
-        System.out.print("Warehouse ID to delivery: ");
-        int warehouseid = in.nextInt();
+    private void DeleteWarehouse() {
+        try {
+            System.out.println("Warehouses:");
+            getALLWarehouse();
+            System.out.print("Warehouse ID to delivery: ");
+            int warehouseid = in.nextInt();
 
-        warehouseService.DeleteWarehouse(warehouseid);
+            warehouseService.DeleteWarehouse(warehouseid);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
     }
 
     private void CreateProduct(){
