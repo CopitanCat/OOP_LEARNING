@@ -21,16 +21,23 @@ public class Console {
         System.out.println("===        Starting System of Warehouse       ===");
         warehouseService.createWarehouse("MCS-2502");
         warehouseService.createWarehouse("Epshtein Island");
-        productService.createProduct("kid oil", "oils for skin");
+        productService.createProduct("baby oil", "oils for skin");
         productService.createProduct("Islam", "human");
         productService.createProduct("Madiar", "human");
         productService.createProduct("Toys", "toy");
+        productService.createProduct("Epshtein", "client");
+        productService.createProduct("Aslyzhan", "seller");
         warehouseService.processDelivery(1, productService.getProductById(2), 1);
         warehouseService.processDelivery(1, productService.getProductById(3), 1);
+        warehouseService.processDelivery(1, productService.getProductById(5), 1);
+        warehouseService.processDelivery(1, productService.getProductById(6), 1);
         warehouseService.processDelivery(2, productService.getProductById(1), 100);
         warehouseService.processDelivery(2, productService.getProductById(4), 10);
         warehouseService.move(1,2,productService.getProductById(2), 1);
         warehouseService.move(1,2,productService.getProductById(3), 1);
+        warehouseService.move(1,2,productService.getProductById(5), 1);
+        warehouseService.move(1,2,productService.getProductById(6), 1);
+        warehouseService.move(2,1,productService.getProductById(6), 1);
     }
 
     public boolean isRun(){

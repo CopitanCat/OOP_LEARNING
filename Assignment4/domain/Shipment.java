@@ -32,7 +32,7 @@ public class Shipment extends Operation{
         if (!ShipmentHistory.isEmpty()) {
             for (Product products : ShipmentHistory.keySet()) {
                 System.out.print("Name: " + products.getName());
-                System.out.print(" | Deliveries: ");
+                System.out.print(" | Shipments: ");
                 for (int i = 0; i<ShipmentHistory.get(products).size();i++){
                     System.out.print( ShipmentHistory.get(products).get(i).get(i+1)+", ");
                 }
