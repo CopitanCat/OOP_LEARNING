@@ -2,7 +2,7 @@ package domain;
 
 import java.util.*;
 
-public class Shipment extends Operation{
+public class Shipment implements Operation{
     private final Map<Product, List<Map<Integer, Integer>>> ShipmentHistory = new HashMap<>();
 
 

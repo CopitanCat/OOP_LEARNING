@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Delivery extends Operation{
+public class Delivery implements Operation{
     private final Map<Product, List<Map<Integer, Integer>>> DeliveryHistory = new HashMap<>();
 
 
